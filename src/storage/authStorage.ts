@@ -1,13 +1,14 @@
-import { storage } from "./mmkv";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 export const authStorage = {
-  setToken: (token: string) => {
-    storage.set("token", token);
+  setToken: async (token: string) => {
+    await AsyncStorage.setItem("token", token);
   },
 
-  deleteToken: () => {
-    storage.remove("token");
+  deleteToken: async () => {
+    await AsyncStorage.removeItem("token");
   },
-  getToken: () => {
-    return storage.getString("token");
+  getToken: async () => {
+    const data = await AsyncStorage.getItem("token");
+    return data;
   },
 };
