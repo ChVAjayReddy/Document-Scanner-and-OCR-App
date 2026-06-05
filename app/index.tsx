@@ -7,6 +7,7 @@ export default function Index() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const initialize = useAuthStore((state) => state.initialize);
   const loading = useAuthStore((state) => state.loading);
+  const hasInitialized = useAuthStore((state) => state.hasInitialized);
   useEffect(() => {
     const init = async () => {
       await initialize();
@@ -16,14 +17,14 @@ export default function Index() {
   }, []);
 
   useEffect(() => {
-    if (!loading) {
+    if (!loading && hasInitialized) {
       if (isAuthenticated) {
-        router.replace("/(auth)/login");
+        router.replace("/(app)/Home");
       } else {
-        router.replace("/(auth)/signup");
+        router.replace("/(auth)/Login");
       }
     }
-  }, [loading, isAuthenticated]);
+  }, [loading, isAuthenticated, hasInitialized]);
 
   if (loading) {
     return (
