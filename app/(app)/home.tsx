@@ -15,6 +15,13 @@ const Home = () => {
       <Pressable onPress={handleLogout}>
         <Text>Logout</Text>
       </Pressable>
+
+      <Pressable onPress={() => router.push("/screens/CameraScreen")}>
+        <Text> Scan the Document</Text>
+      </Pressable>
+      <Pressable onPress={() => router.push("/screens/testScreen")}>
+        <Text> see the db</Text>
+      </Pressable>
     </View>
   );
 };

@@ -6,7 +6,10 @@ export function initDatabase() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       title TEXT NOT NULL,
       description TEXT,
+      imagePath TEXT,
+      ocrText TEXT,
       syncStatus TEXT DEFAULT 'pending',
+      isDeleted INTEGER DEFAULT 0,
       createdAt TEXT
     );
   `);

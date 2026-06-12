@@ -1,8 +1,8 @@
+import { initDatabase } from "@/src/database/initDatabase";
 import { useAuthStore } from "@/src/stores/useAuthStore";
 import { router } from "expo-router";
 import { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
-
 export default function Index() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const initialize = useAuthStore((state) => state.initialize);
@@ -11,11 +11,10 @@ export default function Index() {
   useEffect(() => {
     const init = async () => {
       await initialize();
+      initDatabase();
     };
-
     init();
   }, []);
-
   useEffect(() => {
     if (!loading && hasInitialized) {
       if (isAuthenticated) {
@@ -25,7 +24,6 @@ export default function Index() {
       }
     }
   }, [loading, isAuthenticated, hasInitialized]);
-
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -33,6 +31,13 @@ export default function Index() {
       </View>
     );
   }
-
   return null;
+  // useEffect(() => {
+  //   initDatabase();
+  // }, []);
+  // return (
+  //   <View>
+  //     <CameraScreen />
+  //   </View>
+  // );
 }

@@ -40,7 +40,14 @@
           }
         }
       ],
-      "expo-sqlite"
+      "expo-sqlite",
+      [
+        "rn-mlkit-ocr",
+        {
+          "ocrModels": ["latin", "devanagari"],
+          "ocrUseBundled": true
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
