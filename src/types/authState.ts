@@ -7,4 +7,5 @@ type authState = {
   logout: () => Promise<void>;
   initialize: () => Promise<void>;
 };
+
 export type { authState };

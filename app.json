@@ -47,7 +47,8 @@
           "ocrModels": ["latin", "devanagari"],
           "ocrUseBundled": true
         }
-      ]
+      ],
+      ["@react-native-vector-icons/ionicons"]
     ],
     "experiments": {
       "typedRoutes": true,

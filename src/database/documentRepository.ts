@@ -1,3 +1,4 @@
+import type { document } from "../types/documentState";
 import { db } from "./database";
 
 export function addDocument(
@@ -14,8 +15,18 @@ export function addDocument(
     [title, description, new Date().toISOString(), imagePath],
   );
 }
+export function updateOCRResult(imagePath: string, ocrText: string) {
+  db.runSync(
+    `
+    UPDATE documents
+    SET ocrText = ?
+    WHERE imagePath = ?
+    `,
+    [ocrText, imagePath],
+  );
+}
 
-export function getDocuments() {
+export function getDocuments(): document[] {
   return db.getAllSync(
     `
    SELECT *
@@ -23,7 +34,7 @@ FROM documents
 WHERE isDeleted = 0
 ORDER BY id DESC
     `,
-  );
+  ) as document[];
 }
 export function markDocumentAsSynced(id: number) {
   db.runSync(
@@ -41,6 +52,13 @@ export function getPendingDocuments() {
     FROM documents
     WHERE syncStatus = 'pending'
   `);
+}
+export function getPendingDocumentsCount() {
+  return db.getAllSync(`
+    SELECT *
+    FROM documents
+    WHERE syncStatus = 'pending'
+  `).length;
 }
 export function softDeleteDocument(id: number) {
   db.runSync(

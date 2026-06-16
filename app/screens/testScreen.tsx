@@ -19,7 +19,6 @@ const SQLiteTest = () => {
   const handleFetchDocuments = () => {
     const docs = getDocuments();
     console.log(docs, "Documents from DB");
-
     setDocuments(docs as any[]);
   };
   const handleSyncDocuments = () => {
@@ -75,6 +74,7 @@ const SQLiteTest = () => {
             <Text>{doc.imagePath}</Text>
             <Text>{doc.syncStatus}</Text>
             <Text>{doc.isDeleted}</Text>
+            <Text>{doc.ocrText}</Text>
 
             <Image
               source={{ uri: doc.imagePath }}
