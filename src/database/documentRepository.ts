@@ -9,20 +9,21 @@ export function addDocument(
   db.runSync(
     `
     INSERT INTO documents
-    (title, description, createdAt,imagePath)
-    VALUES (?, ?, ?,?)
+    (title, description, createdAt,imagePath,syncStatus)
+    VALUES (?, ?, ?,?,?)
     `,
-    [title, description, new Date().toISOString(), imagePath],
+    [title, description, new Date().toISOString(), imagePath, "pending"],
   );
 }
 export function updateOCRResult(imagePath: string, ocrText: string) {
   db.runSync(
     `
     UPDATE documents
-    SET ocrText = ?
+    SET ocrText = ?,
+        syncStatus = ?
     WHERE imagePath = ?
     `,
-    [ocrText, imagePath],
+    [ocrText, "success", imagePath],
   );
 }
 

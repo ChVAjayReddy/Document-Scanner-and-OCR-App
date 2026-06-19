@@ -81,6 +81,7 @@ const DisplayDocuments = () => {
                     setModalVisible(true);
                   }}
                 >
+                  <Text>{doc.syncStatus}</Text>
                   <Text>Full Details</Text>
                 </Pressable>
               </View>

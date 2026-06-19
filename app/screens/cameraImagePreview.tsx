@@ -30,9 +30,13 @@ const ImagePreview = () => {
   function handleSave() {
     try {
       const file = new File(Paths.cache, photoUri.split("cache/")[1]);
+
       file.move(Paths.document);
+
       addDocument(title, description, file.uri);
+
       loadDocuments();
+
       router.replace("/(app)/Home");
       performOCR(file.uri);
     } catch (error) {

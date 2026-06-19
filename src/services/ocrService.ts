@@ -5,7 +5,9 @@ export async function performOCR(imageUri: string) {
   try {
     const ocrText = await MlkitOcr.recognizeText(imageUri);
     updateOCRResult(imageUri, ocrText.text);
-    useDocumentStore.getState().loadDocuments();
+    setTimeout(() => {
+      useDocumentStore.getState().loadDocuments();
+    }, 5000);
   } catch (error) {
     console.error("OCR Error:", error);
     return;
