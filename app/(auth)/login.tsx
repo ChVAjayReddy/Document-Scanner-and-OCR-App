@@ -1,8 +1,8 @@
 import authService from "@/src/services/authService";
-import { useAuthStore } from "@/src/stores/useAuthStore";
 import { router } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { Image, Pressable, Text, TextInput, View } from "react-native";
+import { useAuth0 } from "react-native-auth0";
 import { SafeAreaView } from "react-native-safe-area-context";
 type LoginForm = {
   email: string;
@@ -10,17 +10,28 @@ type LoginForm = {
 };
 
 const Login = () => {
-  const login = useAuthStore((state) => state.login);
+  const { authorize } = useAuth0();
+  // const login = useAuthStore((state) => state.login);
   const {
     handleSubmit,
     formState: { errors },
     control,
   } = useForm<LoginForm>({ defaultValues: { email: "", password: "" } });
+
   async function onSubmit(data: LoginForm) {
     const response = await authService.loginUser(data.email, data.password);
-    await login(response.token);
+    // await login(response.token);
     router.replace("/(app)/Home");
   }
+  const login = async () => {
+    try {
+      await authorize({
+        scope: "openid profile email",
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  };
   return (
     <SafeAreaView
       style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
@@ -176,14 +187,16 @@ const Login = () => {
                 borderColor: "lightblue",
               }}
             >
-              <Image
-                source={require("../../assets/images/Google_Favicon_2025.svg.png")}
-                style={{ width: 50, height: 50 }}
-                resizeMode="contain"
-                onError={(e) =>
-                  console.log("Image load error:", e.nativeEvent?.error)
-                }
-              />
+              <Pressable onPress={login}>
+                <Image
+                  source={require("../../assets/images/Google_Favicon_2025.svg.png")}
+                  style={{ width: 50, height: 50 }}
+                  resizeMode="contain"
+                  onError={(e) =>
+                    console.log("Image load error:", e.nativeEvent?.error)
+                  }
+                />
+              </Pressable>
             </View>
             <View
               style={{

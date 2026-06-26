@@ -4,6 +4,7 @@ type document = {
   description: string;
   imagePath: string;
   ocrText: string;
+  ocrStatus: string;
   syncStatus: string;
   isDeleted: number;
   createdAt: string;
@@ -12,6 +13,8 @@ type document = {
 type documentState = {
   documents: document[];
   unsyncedDocumentsCount: number;
+  modalVisible: boolean;
+  modalDocument: document[];
   loadDocuments: () => void;
   addingDocument: (
     title: string,
@@ -19,7 +22,10 @@ type documentState = {
     imagePath: string,
   ) => void;
   deletingDocument: (id: number) => void;
-  unsyncedDocuments: () => void;
+  setModalDocument: (id: number) => void;
+
+  OCRQueue: document[];
+  pendingOCRDocuments: () => void;
 };
 
 export type { document, documentState };

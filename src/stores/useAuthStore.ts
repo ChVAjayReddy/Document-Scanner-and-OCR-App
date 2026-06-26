@@ -6,6 +6,7 @@ export const useAuthStore = create<authState>((set) => ({
   hasInitialized: false,
   token: null,
   isAuthenticated: false,
+  userDetails: null,
   login: async (token: string) => {
     await authStorage.setToken(token);
     set({ token, isAuthenticated: true, hasInitialized: true });

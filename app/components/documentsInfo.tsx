@@ -1,23 +1,15 @@
 import { useDocumentStore } from "@/src/stores/useDocumentStore";
 import { AntDesign } from "@expo/vector-icons";
-import { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 const DocmentsInfo = () => {
-  const noOfDocuments = useDocumentStore((state) => state.documents.length);
-  const unsyncedDocumentsCount = useDocumentStore(
-    (state) => state.unsyncedDocumentsCount,
+  const documents = useDocumentStore((state) => state.documents);
+  const unsyncedDocuments = documents.filter(
+    (doc) => doc.isDeleted === 0 && doc.syncStatus === "pending",
   );
-  const unsyncedDocuments = useDocumentStore(
-    (state) => state.unsyncedDocuments,
+  const pendingOCRDocuments = documents.filter(
+    (doc) => doc.isDeleted === 0 && doc.ocrStatus === "pending",
   );
-
-  useEffect(() => {
-    unsyncedDocuments();
-  }, []);
-
-  const syncedCount = noOfDocuments - unsyncedDocumentsCount;
-  const ocrCompletedCount = noOfDocuments - 2;
 
   return (
     <View style={styles.container}>
@@ -27,7 +19,7 @@ const DocmentsInfo = () => {
         </View>
         <View style={styles.statsTextContainer}>
           <Text style={styles.statsLabel}>Total Documents</Text>
-          <Text style={styles.statsValue}>{noOfDocuments}</Text>
+          <Text style={styles.statsValue}>{documents.length}</Text>
         </View>
       </View>
 
@@ -41,33 +33,41 @@ const DocmentsInfo = () => {
             <View style={styles.statItem}>
               <View style={[styles.statDot, styles.statDotCompleted]} />
               <Text style={styles.statItemLabel}>Completed</Text>
-              <Text style={styles.statItemValue}>{ocrCompletedCount}</Text>
+              <Text style={styles.statItemValue}>
+                {documents.length - pendingOCRDocuments.length}
+              </Text>
             </View>
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
               <View style={[styles.statDot, styles.statDotPending]} />
               <Text style={styles.statItemLabel}>Pending</Text>
-              <Text style={styles.statItemValue}>2</Text>
+              <Text style={styles.statItemValue}>
+                {pendingOCRDocuments.length}
+              </Text>
             </View>
           </View>
         </View>
 
         <View style={styles.statCard}>
           <View style={styles.cardHeader}>
-            <AntDesign name="cloud-sync" size={20} color="#10b981" />
+            <AntDesign name="cloud-sync" size={20} color="#3b82f6" />
             <Text style={styles.cardTitle}>Sync Status</Text>
           </View>
           <View style={styles.cardStats}>
             <View style={styles.statItem}>
               <View style={[styles.statDot, styles.statDotSynced]} />
               <Text style={styles.statItemLabel}>Synced</Text>
-              <Text style={styles.statItemValue}>{syncedCount}</Text>
+              <Text style={styles.statItemValue}>
+                {documents.length - unsyncedDocuments.length}
+              </Text>
             </View>
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
               <View style={[styles.statDot, styles.statDotPending]} />
               <Text style={styles.statItemLabel}>Pending</Text>
-              <Text style={styles.statItemValue}>{unsyncedDocumentsCount}</Text>
+              <Text style={styles.statItemValue}>
+                {unsyncedDocuments.length}
+              </Text>
             </View>
           </View>
         </View>

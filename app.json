@@ -20,8 +20,12 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.DocumentScannerandOCRApp"
+      "package": "com.anonymous.DocumentScannerandOCRApp",
+      "manifestPlaceholders": {
+        "auth0Domain": "dev-mx4otlbmkij2d82s.us.auth0.com"
+      }
     },
+
     "web": {
       "output": "static",
       "favicon": "./assets/images/favicon.png"
@@ -48,7 +52,13 @@
           "ocrUseBundled": true
         }
       ],
-      ["@react-native-vector-icons/ionicons"]
+      ["@react-native-vector-icons/ionicons"],
+      [
+        "react-native-auth0",
+        {
+          "domain": "dev-mx4otlbmkij2d82s.us.auth0.com"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

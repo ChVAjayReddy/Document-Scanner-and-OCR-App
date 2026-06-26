@@ -1,5 +1,7 @@
-import { addDocument } from "@/src/database/documentRepository";
-import { performOCR } from "@/src/services/ocrService";
+import {
+  addDocument,
+  getDocumentbyURI,
+} from "@/src/database/documentRepository";
 import { useCameraStore } from "@/src/stores/useCameraStore";
 import { useDocumentStore } from "@/src/stores/useDocumentStore";
 import { AntDesign } from "@expo/vector-icons";
@@ -16,6 +18,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
 const ImagePreview = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [title, setTitle] = useState("");
@@ -27,18 +30,26 @@ const ImagePreview = () => {
     file.delete();
     router.replace("/screens/CameraScreen");
   }
-  function handleSave() {
+  async function handleSave() {
+    if (!photoUri) {
+      console.error("No photo available to save.");
+      return;
+    }
+
     try {
-      const file = new File(Paths.cache, photoUri.split("cache/")[1]);
-
+      const fileName = photoUri.split("cache/")[1];
+      if (!fileName) {
+        throw new Error("Unable to resolve cached photo file name.");
+      }
+      const file = new File(Paths.cache, fileName);
       file.move(Paths.document);
-
-      addDocument(title, description, file.uri);
-
+      addDocument(title || "Untitled Document", description, file.uri);
       loadDocuments();
-
       router.replace("/(app)/Home");
-      performOCR(file.uri);
+      let temp = getDocumentbyURI(file.uri);
+      useDocumentStore.setState((state) => ({
+        OCRQueue: [...state.OCRQueue, temp[0]],
+      }));
     } catch (error) {
       console.error("Error saving photo:", error);
     }

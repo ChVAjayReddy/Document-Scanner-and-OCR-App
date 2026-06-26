@@ -9,10 +9,10 @@ export function addDocument(
   db.runSync(
     `
     INSERT INTO documents
-    (title, description, createdAt,imagePath,syncStatus)
-    VALUES (?, ?, ?,?,?)
+    (title, description, createdAt,imagePath)
+    VALUES (?, ?, ?, ?)
     `,
-    [title, description, new Date().toISOString(), imagePath, "pending"],
+    [title, description, new Date().toISOString(), imagePath],
   );
 }
 export function updateOCRResult(imagePath: string, ocrText: string) {
@@ -20,10 +20,11 @@ export function updateOCRResult(imagePath: string, ocrText: string) {
     `
     UPDATE documents
     SET ocrText = ?,
-        syncStatus = ?
+        ocrStatus = ?,
+        syncStatus = 'pending'
     WHERE imagePath = ?
     `,
-    [ocrText, "success", imagePath],
+    [ocrText, "OCR Completed", imagePath],
   );
 }
 
@@ -37,7 +38,7 @@ ORDER BY id DESC
     `,
   ) as document[];
 }
-export function markDocumentAsSynced(id: number) {
+export async function markDocumentAsSynced(id: number) {
   db.runSync(
     `
     UPDATE documents
@@ -47,12 +48,12 @@ export function markDocumentAsSynced(id: number) {
     [id],
   );
 }
-export function getPendingDocuments() {
+export function getPendingSyncDocuments(): document[] {
   return db.getAllSync(`
     SELECT *
     FROM documents
     WHERE syncStatus = 'pending'
-  `);
+  `) as document[];
 }
 export function getPendingDocumentsCount() {
   return db.getAllSync(`
@@ -71,4 +72,21 @@ export function softDeleteDocument(id: number) {
     `,
     [id],
   );
+}
+export function getPendingOCRDocuments(): document[] {
+  return db.getAllSync(`
+    SELECT *
+    FROM documents
+    WHERE ocrStatus = 'pending'
+  `);
+}
+export function getDocumentbyURI(uri: string): document[] {
+  return db.getAllSync(
+    `
+    SELECT *
+    FROM documents
+    WHERE imagePath = ?
+  `,
+    [uri],
+  ) as document[];
 }
